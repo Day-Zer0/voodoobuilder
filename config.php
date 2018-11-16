@@ -6,6 +6,9 @@ set_time_limit(120);
 
 
 /* Amazon AWS */
-
+$access_key = "";
+$secret_key = "";
+$associative_tag = "";
+$endpoint = "webservices.amazon.it";
 
 ?>
