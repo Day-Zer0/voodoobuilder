@@ -38,4 +38,47 @@ return 1;
 }else{   
 return 0;   
 }}
+
+/*
+* RANDOM NUMBER
+* @param (integer) $lenght - lenght of random number to generate
+* @return (string) $text - random number generated
+* @example random_number(4) return "9372"
+*/
+function random_number($lenght){
+	$string = "";
+	for($i=0;$i<$lenght;$i++){
+		$string .= mt_rand(0, 9);
+	}
+	return $string;
+}
+
+/* 
+* GET TOKEN CSRF
+* @return (string) $token - Token csrf
+* @example : csrf() return "12312312312312312312312312312312"
+*/
+function csrf(){
+	if (isset($_SESSION['csrf'])){
+		return htmlentities($_SESSION['csrf']);
+	}else{
+		$_SESSION['csrf'] = random_number(32);
+		return htmlentities($_SESSION['csrf']);
+	}
+}
+
+
+/*
+* CHECK TOKEN CSRF 
+* @param (string) $input - token reiceved to convalidate
+* @return (boolean) $output - True / False
+* @example csrf_check("1234") return "false"
+*/
+function csrf_check($input){
+	if ($input===csrf()){
+		return true;
+	}else{
+		return false;
+	}
+}
 ?>
