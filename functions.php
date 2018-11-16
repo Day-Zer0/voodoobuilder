@@ -1,4 +1,6 @@
 <?php
+require_once("config.php");
+
 function generateRequestUrl($keyword)
 {
     $uri = "/onca/xml";
@@ -117,8 +119,6 @@ function getProductPrice($asin, $searchUsed = false)
 
     return array("price" => $lowestPrice, "conditions" => $conditions);
 }
-
-require_once("config.php");
 
 /*
 * SHA512
