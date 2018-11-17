@@ -4,6 +4,11 @@ set_time_limit(120);
 
 /* autentificazione */
 
+/* database */
+$host = "localhost";
+$username = "root";
+$password = "tOcisaJE";
+$dbname = "voodoobuilder";
 
 /* Amazon AWS */
 $access_key = "AKIAID5CWRA453W6WWGA";

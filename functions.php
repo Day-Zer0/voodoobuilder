@@ -112,11 +112,27 @@ function getXmlDocument($asin)
     return $xml;
 }
 
-function isAvailable($asin)
+function updateDb()
 {
-    $xml = getXmlDocument($asin);
+    //leggo asin da db -> $asin
+    $productInfo = getProductInfo($asin); //ottengo dati aggiornati
+    //aggiorno db con dati di $productInfo
+}
 
+function getProductInfo($asin)
+{
+    $xml = getXmlDocument($asin)
+
+    $isAvailable = isAvailable($xml);
+    $productPrice = getProductPrice($xml);
+
+    return array("isAvailable" => $isAvailable, "price" => $productPrice);
+}
+
+function isAvailable($xml)
+{
     $errorsNode =  $xml->getElementsByTagName("Items")[0]->getElementsByTagName("Request")[0]->getElementsByTagName("Errors")[0];
+    
     if(isset($errorsNode))
     {
         if($errorsNode->getElementsByTagName("Error")[0]->getElementsByTagName("Code")[0]->nodeValue == "AWS.ECommerceService.NoExactMatches")
@@ -129,43 +145,14 @@ function isAvailable($asin)
     return true;
 }
 
-function getProductPrice($asin, $searchUsed = false)
+function getProductPrice($xml)
 {
-    $xml = getXmlDocument($asin);
-
     $lowestNewPriceNode = $xml->getElementsByTagName("Items")[0]->getElementsByTagName("Item")[0]->getElementsByTagName("OfferSummary")[0]->getElementsByTagName("LowestNewPrice")[0];
-    $lowestNewPriceValue =  $lowestNewPriceNode->getElementsByTagName("Amount")[0]->nodeValue;
     
-    if($searchUsed)
-    {
-        $lowestUsedPriceNode = $xml->getElementsByTagName("Items")[0]->getElementsByTagName("Item")[0]->getElementsByTagName("OfferSummary")[0]->getElementsByTagName("LowestUsedPrice")[0];
-        if(isset($lowestUsedPriceNode))
-        {
-            $lowestUsedPriceValue = $lowestUsedPriceNode->getElementsByTagName("Amount")[0]->nodeValue;
-        }
-    }
+    if(isset($lowestNewPriceNode))
+        return $lowestNewPriceNode->getElementsByTagName("Amount")[0]->nodeValue;
 
-    $lowestPrice = $lowestNewPriceValue;
-    $conditions = "new";
-    
-    if(isset($lowestUsedPriceValue))
-    {
-        if(isset($lowestNewPriceValue))
-        {
-            if($lowestUsedPriceValue < $lowestNewPriceValue)
-            {
-                $lowestPrice = $lowestUsedPriceValue;
-                $conditions = "used";
-            }
-        }
-        else
-        {
-            $lowestPrice = $lowestUsedPriceValue;
-            $conditions = "used";
-        }
-    }
-
-    return array("price" => $lowestPrice, "conditions" => $conditions);
+    return null;
 }
 
 function getProductImagesUrl($asin)
