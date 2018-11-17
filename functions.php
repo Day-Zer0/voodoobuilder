@@ -43,7 +43,7 @@ function generateRequestUrl($keyword)
     // Generate the signed URL
     $request_url = 'https://'.$GLOBALS['endpoint'].$uri.'?'.$canonical_query_string.'&Signature='.rawurlencode($signature);
 
-    echo $request_url;
+    //echo $request_url;
 
     return $request_url;
 }
@@ -120,6 +120,16 @@ function getProductPrice($asin, $searchUsed = false)
     return array("price" => $lowestPrice, "conditions" => $conditions);
 }
 
+function getProductImagesUrl($asin)
+{
+    $xml = getXmlDocument($asin);
+    $largeImage = $xml->getElementsByTagName("Items")[0]->getElementsByTagName("Item")[0]->getElementsByTagName("LargeImage")[0]->getElementsByTagName("URL")[0]->nodeValue; //500*500px
+    $mediumImage = $xml->getElementsByTagName("Items")[0]->getElementsByTagName("Item")[0]->getElementsByTagName("MediumImage")[0]->getElementsByTagName("URL")[0]->nodeValue; //160*160px
+    $smallImage = $xml->getElementsByTagName("Items")[0]->getElementsByTagName("Item")[0]->getElementsByTagName("SmallImage")[0]->getElementsByTagName("URL")[0]->nodeValue; //75*75px
+
+    return array("small"=>$smallImage, "medium"=>$mediumImage, "large"=>$largeImage);
+}
+
 /*
 * SHA512
 * @param (string) $x - password to encrypt
@@ -141,8 +151,6 @@ $options = ['cost' => 14,];
 $sha512 = hash('sha512', $password);
 return password_hash($sha512, PASSWORD_BCRYPT, $options);
 }
-
-
 
 /*
 * BCRYPT DECRYPT PASSWORD
@@ -185,7 +193,6 @@ function csrf(){
 		return htmlentities($_SESSION['csrf']);
 	}
 }
-
 
 /*
 * CHECK TOKEN CSRF 
