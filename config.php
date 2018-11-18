@@ -7,7 +7,7 @@ set_time_limit(120);
 /* database */
 $host = "localhost";
 $username = "root";
-$password = "tOcisaJE";
+$password = "";
 $dbname = "voodoobuilder";
 
 /* Amazon AWS */
